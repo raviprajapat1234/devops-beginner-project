@@ -21,10 +21,13 @@ jobs:
         run: docker run -d -p 5000:5000 --name test-app devops-beginner-app
 
       - name: Wait for app to start
-        run: sleep 5
+        run: sleep 10
+
+      - name: Show container logs (debug)
+        run: docker logs test-app
 
       - name: Test app is responding
-        run: curl --fail http://localhost:5000
+        run: curl --retry 5 --retry-delay 3 --fail http://localhost:5000
 
       - name: Stop container
         run: docker stop test-app
