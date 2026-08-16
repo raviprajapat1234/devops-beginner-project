@@ -1,0 +1,30 @@
+name: Docker Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t devops-beginner-app .
+
+      - name: Run container
+        run: docker run -d -p 5000:5000 --name test-app devops-beginner-app
+
+      - name: Wait for app to start
+        run: sleep 5
+
+      - name: Test app is responding
+        run: curl --fail http://localhost:5000
+
+      - name: Stop container
+        run: docker stop test-app
